@@ -345,8 +345,10 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 		return 0;
 
 	if (cpufreq_frequency_table_cpuinfo(policy, table)) {
-        policy->cpuinfo.min_freq = 268000;
- 	policy->cpuinfo.max_freq = 2457600;
+        #ifdef CONFIG_MSM_CPU_FREQ_SET_MIN_MAX
+ 		policy->cpuinfo.min_freq = CONFIG_MSM_CPU_FREQ_MIN;
+ 		policy->cpuinfo.max_freq = CONFIG_MSM_CPU_FREQ_MAX;
+        #endif
         }
 
 	policy->min = 268000;
@@ -383,7 +385,7 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 		return ret;
 	pr_debug("cpufreq: cpu%d init at %d switching to %d\n",
 			policy->cpu, cur_freq, table[index].frequency);
-	policy->cur = table[index].frequency;
+	policy->cur = policy->max;
 
 	policy->cpuinfo.transition_latency =
 		acpuclk_get_switch_time() * NSEC_PER_USEC;
